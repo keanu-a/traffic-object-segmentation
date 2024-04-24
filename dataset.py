@@ -1,16 +1,16 @@
 import os
-import cv2
 from torch.utils.data import Dataset
 from torch import from_numpy
 from PIL import Image
 
 
 class CityscapesDataset(Dataset):
-    def __init__(self, image_dir, label_dir, split, transform=None):
+    def __init__(self, image_dir, label_dir, split, image_transform=None, label_transform=None):
         self.image_dir = image_dir
         self.label_dir = label_dir
         self.split = split # "train", "val", or "test"
-        self.transform = transform
+        self.image_transform = image_transform
+        self.label_transform = label_transform
         self.image_paths = []
         self.label_paths = []
 
@@ -48,8 +48,10 @@ class CityscapesDataset(Dataset):
         image = Image.open(image_path).convert("RGB")
         label = Image.open(label_path).convert("L")
 
-        if self.transform:
-            image = self.transform(image)
-            label = self.transform(label)
+        if self.image_transform:
+            image = self.image_transform(image)
+
+        if self.label_transform:
+            label = self.label_transform(label)
 
         return image, label

@@ -13,15 +13,26 @@ BATCH_SIZE = 8 # Number of images to be processed together during training
 IMAGE_SIZE = (256, 256) # Size for resizing images for training
 CLASS_AMOUNT = 30 # Cityscapes has 30 classes
 
-transform = transforms.Compose([
+image_transform = transforms.Compose([
     transforms.Resize(IMAGE_SIZE), # Resizing for training
-    transforms.ToTensor() # Converting to PyTorch tensors
+    transforms.ToTensor(), # Converting to PyTorch tensors
+    transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]) # mean and std from ImageNet - good practice
+])
+
+label_transform = transforms.Compose([
+    transforms.Resize(IMAGE_SIZE), # Resizing for training
+    transforms.ToTensor(), # Converting to PyTorch tensors
 ])
 
 # Creating training and validation datasets
-train_dataset = CityscapesDataset(image_dir=IMAGE_DIR, label_dir=LABEL_DIR, split="train", transform=transform)
+training_set = CityscapesDataset(image_dir=IMAGE_DIR, label_dir=LABEL_DIR, split="train", image_transform=image_transform, label_transform=label_transform)
+validation_set = CityscapesDataset(image_dir=IMAGE_DIR, label_dir=LABEL_DIR, split="val", image_transform=image_transform, label_transform=label_transform)
 
-image, label = train_dataset[0]
+# Setting up dataloaders
+training_loader = DataLoader(training_set, batch_size=BATCH_SIZE, shuffle=True)
+validation_loader = DataLoader(validation_set, batch_size=BATCH_SIZE, shuffle=False)
+
+image, label = training_set[0]
 
 to_pil = transforms.ToPILImage()
 image_pil = to_pil(image)
