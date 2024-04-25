@@ -1,6 +1,5 @@
 import os
 from torch.utils.data import Dataset
-from torch import from_numpy
 from PIL import Image
 
 
@@ -48,6 +47,7 @@ class CityscapesDataset(Dataset):
         image = Image.open(image_path).convert("RGB")
         label = Image.open(label_path).convert("L")
 
+        # Normalizes images as well
         if self.image_transform:
             image = self.image_transform(image)
 

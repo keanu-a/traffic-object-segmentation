@@ -2,8 +2,10 @@ import os
 import torch
 from torchvision import transforms
 from torch.utils.data import DataLoader
-from dataset import CityscapesDataset
 import matplotlib.pyplot as plt
+
+from dataset import CityscapesDataset
+from model import UNet
 
 CITYSCAPES_PATH = os.path.join("cityscapes")
 IMAGE_DIR = os.path.join(CITYSCAPES_PATH, "leftImg8bit")
@@ -32,7 +34,7 @@ validation_set = CityscapesDataset(image_dir=IMAGE_DIR, label_dir=LABEL_DIR, spl
 training_loader = DataLoader(training_set, batch_size=BATCH_SIZE, shuffle=True)
 validation_loader = DataLoader(validation_set, batch_size=BATCH_SIZE, shuffle=False)
 
-image, label = training_set[0]
+image, label = training_set[1]
 
 to_pil = transforms.ToPILImage()
 image_pil = to_pil(image)
