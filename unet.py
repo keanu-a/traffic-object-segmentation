@@ -8,19 +8,19 @@ class UNet(nn.Module):
     def __init__(self, in_channels, class_amount):
         super().__init__()
 
-        self.encoder_1 = DownSample(in_channels, 64)
-        self.encoder_2 = DownSample(64, 128)
-        self.encoder_3 = DownSample(128, 256)
-        self.encoder_4 = DownSample(256, 512)
+        self.encoder_1 = DownSample(in_channels, 32)
+        self.encoder_2 = DownSample(32, 64)
+        self.encoder_3 = DownSample(64, 128)
+        self.encoder_4 = DownSample(128, 256)
 
-        self.bottleneck = DoubleConv(512, 1024)
+        self.bottleneck = DoubleConv(256, 512)
 
-        self.decoder_1 = UpSample(1024, 512)
-        self.decoder_2 = UpSample(512, 256)
-        self.decoder_3 = UpSample(256, 128)
-        self.decoder_4 = UpSample(128, 64)
+        self.decoder_1 = UpSample(512, 256)
+        self.decoder_2 = UpSample(256, 128)
+        self.decoder_3 = UpSample(128, 64)
+        self.decoder_4 = UpSample(64, 32)
 
-        self.output = nn.Conv2d(in_channels=64, out_channels=class_amount, kernel_size=1)
+        self.output = nn.Conv2d(in_channels=32, out_channels=class_amount, kernel_size=1)
 
     def forward(self, x):
         # ENCODING
