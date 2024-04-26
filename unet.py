@@ -6,7 +6,7 @@ from unet_parts import DoubleConv, DownSample, UpSample
 # Using UNet due to simple architecture
 class UNet(nn.Module):
     def __init__(self, in_channels, class_amount):
-        super().__init__()
+        super(UNet, self).__init__()
 
         self.encoder_1 = DownSample(in_channels, 32)
         self.encoder_2 = DownSample(32, 64)

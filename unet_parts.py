@@ -3,6 +3,7 @@ import torch.nn as nn
 
 PADDING = 1
 STRIDE = 2
+DOUBLE_CONV_STRIDE = 1
 DOUBLE_CONV_KERNEL_SIZE = 3
 SAMPLE_KERNEL_SIZE = 2
 
@@ -13,7 +14,7 @@ class DoubleConv(nn.Module):
         Two 3x3 convolutions, each followed by a rectified linear unit (ReLU)
     """
     def __init__(self, in_channels, out_channels):
-        super().__init__()
+        super(DoubleConv, self).__init__()
 
         self.double_conv = nn.Sequential(
             nn.Conv2d(in_channels, out_channels, kernel_size=DOUBLE_CONV_KERNEL_SIZE, padding=PADDING),

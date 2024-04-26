@@ -45,7 +45,7 @@ class CityscapesDataset(Dataset):
         label_path = self.label_paths[idx]
 
         image = Image.open(image_path).convert("RGB")
-        label = Image.open(label_path).convert("L")
+        label = Image.open(label_path).convert("L")   
 
         # Normalizes images as well
         if self.image_transform:
