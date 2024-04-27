@@ -20,7 +20,9 @@ class UNet(nn.Module):
         self.decoder_3 = UpSample(128, 64)
         self.decoder_4 = UpSample(64, 32)
 
-        self.output = nn.Conv2d(in_channels=32, out_channels=class_amount, kernel_size=1)
+        self.output = nn.Conv2d(
+            in_channels=32, out_channels=class_amount, kernel_size=1
+        )
 
     def forward(self, x):
         # ENCODING

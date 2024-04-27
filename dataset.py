@@ -4,54 +4,54 @@ from PIL import Image
 
 
 class CityscapesDataset(Dataset):
-    def __init__(self, image_dir, label_dir, split, image_transform=None, label_transform=None):
+    def __init__(self, image_dir, label_dir, split, i_transform=None, l_transform=None):
         self.image_dir = image_dir
         self.label_dir = label_dir
-        self.split = split # "train", "val", or "test"
-        self.image_transform = image_transform
-        self.label_transform = label_transform
-        self.image_paths = []
-        self.label_paths = []
+        self.split = split  # "train", "val", or "test"
+        self.i_transform = i_transform
+        self.l_transform = l_transform
+        self.images = []
+        self.labels = []
 
         # Load image and label paths based on split
-        self._load_paths()
-
+        self.load_cityscapes()
 
     # Iterates through directories based on the split
-    def _load_paths(self):
-        # Go to specfied split directory and image file paths to image_paths
+    def load_cityscapes(self):
+        # Go to specfied split directory and image file paths to images
         for dirpath, _, filenames in os.walk(os.path.join(self.image_dir, self.split)):
             for filename in filenames:
                 if filename.endswith(".png"):
-                    image_path = os.path.join(dirpath, filename)
+                    image = os.path.join(dirpath, filename)
 
                     # Only using labelIds since doing semantic segmentation
                     label_dirpath = dirpath.replace("leftImg8bit", "gtFine")
-                    label_filename = filename.replace("_leftImg8bit.png", "_gtFine_labelIds.png")
-                    label_path = os.path.join(label_dirpath, label_filename)
+                    label_filename = filename.replace(
+                        "_leftImg8bit.png", "_gtFine_labelIds.png"
+                    )
+                    label = os.path.join(label_dirpath, label_filename)
 
-                    self.image_paths.append(image_path)
-                    self.label_paths.append(label_path)
+                    self.images.append(image)
+                    self.labels.append(label)
 
-    
     # Gets length of the dataset
     def __len__(self):
-        return len(self.image_paths)
-    
+        return len(self.images)
 
     # Gets a specific image-label based on index
     def __getitem__(self, idx):
-        image_path = self.image_paths[idx]
-        label_path = self.label_paths[idx]
+        image = self.images[idx]
+        label = self.labels[idx]
 
-        image = Image.open(image_path).convert("RGB")
-        label = Image.open(label_path).convert("L")   
+        image = Image.open(image).convert("RGB")
+        label = Image.open(label).convert("L")
 
         # Normalizes images as well
-        if self.image_transform:
-            image = self.image_transform(image)
+        if self.i_transform:
+            image = self.i_transform(image)
 
-        if self.label_transform:
-            label = self.label_transform(label)
+        if self.l_transform:
+            label = self.l_transform(label)
+            label = label.long()  # Need to convert to type Long for CrossEntropyLoss
 
         return image, label
