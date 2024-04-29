@@ -1,1 +1,4 @@
 cityscapes/
+checkpoints/
+trained_model.pth
+result/

@@ -1,27 +1,43 @@
-import os
-from dataset import CityscapesDataset
-from torch.utils.data import DataLoader
-import torch
+from torchvision.datasets import Cityscapes
 
-CITYSCAPES_PATH = os.path.join("cityscapes")
-IMAGE_DIR = os.path.join(CITYSCAPES_PATH, "leftImg8bit")
-LABEL_DIR = os.path.join(CITYSCAPES_PATH, "gtFine")
+cityscape_classes = Cityscapes.classes
 
 
-def get_dataloaders(
-    image_dir, label_dir, batch_size, image_transform, label_transform, pin_memory
-):
-    pass
+def get_ignored_classes():
+    """
+    Gets ignored classes from the cityscapes classes file
+    """
+    ignore = []
+    for c in cityscape_classes:
+        if c.ignore_in_eval:
+            ignore.append(c.id)
+
+    return ignore
 
 
-def check_accuracy(loader, model, device="cuda"):
-    num_correct = 0
-    num_pixels = 0
+def get_used_classes():
+    """
+    Gets used classes from the cityscapes classes file
+    Adds 34 to handle ignored
+    """
+    used = []
+    for c in cityscape_classes:
+        if not c.ignore_in_eval:
+            used.append(c.id)
 
-    model.eval()
+    used.append(34)
+    return used
 
-    with torch.no_grad():
-        for x, y in loader:
-            x = x.to(device)
-            y = y.to(device)
-            pred = torch.sigmoid(model(x))
+
+def get_used_colors():
+    """
+    Gets used class colors from the cityscapes classes file
+    Adds [0, 0, 0] to handle ignored
+    """
+    colors = [[0, 0, 0]]
+    for c in cityscape_classes:
+        if not c.ignore_in_eval:
+            color = c.color
+            colors.append([color[0], color[1], color[2]])
+
+    return colors
