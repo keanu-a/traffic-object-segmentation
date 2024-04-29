@@ -98,4 +98,4 @@ class CityscapesDataset(Cityscapes):
         for v in self.class_mapping:
             class_mask[mask == v] = self.class_mapping[v]
 
-        return image, class_mask, label
+        return image, class_mask

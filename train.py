@@ -72,12 +72,11 @@ def train():
         print(f"EPOCH: {epoch} - Training...")
 
         # Run model on training set
-        for image, label, l in tqdm(training_loader):
+        for image, label in tqdm(training_loader):
             optimizer.zero_grad()
 
             image = image.to(DEVICE)
             label = label.to(DEVICE)
-            l = l.to(DEVICE)
 
             output = model(image)
 
@@ -100,29 +99,27 @@ def train():
             
         image = inv_norm(image)
 
-        l_np = l.squeeze().cpu().numpy()
-        l_pil = Image.fromarray(np.uint8(l_np))
-        l_pil.save(f"./result/label_{epoch}_{epoch + 1}_image.png")
         utils.save_image(image, f"./result/image_{epoch}_{epoch + 1}_image.png")
         utils.save_image(threshold, f"./result/pred_{epoch}_{epoch + 1}_image.png")
+        
 
         # Calculate losses from training on training and validation sets
         train_loss_average = train_loss / len(training_loader)
 
         print(f"EPOCH: {epoch} - Train loss: {train_loss_average}")
 
-    # # Saving checkpoint after every 2 epochs
-    # if (epoch + 1) % 2 == 0:
-    #     checkpoint_path = os.path.join(CHECKPOINT_DIR, f"checkpoint_epoch_{epoch}.pth")
-    #     torch.save(
-    #         {
-    #             "epoch": epoch,
-    #             "model_state_dict": model.state_dict(),
-    #             "optimizer_state_dict": optimizer.state_dict(),
-    #             "average_train_loss": train_loss_average,
-    #         },
-    #         checkpoint_path,
-    #     )
+        # Saving checkpoint after every 2 epochs
+        if (epoch + 1) % 2 == 0:
+            checkpoint_path = os.path.join(CHECKPOINT_DIR, f"checkpoint_epoch_{epoch}.pth")
+            torch.save(
+                {
+                    "epoch": epoch,
+                    "model_state_dict": model.state_dict(),
+                    "optimizer_state_dict": optimizer.state_dict(),
+                    "average_train_loss": train_loss_average,
+                },
+                checkpoint_path,
+            )
 
     # Saving final trained model
     torch.save(model.state_dict(), "trained_model.pth")
