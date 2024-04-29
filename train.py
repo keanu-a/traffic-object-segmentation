@@ -4,8 +4,6 @@ import torch.nn as nn
 from torch import optim, cuda
 from torch.utils.data import DataLoader
 from tqdm import tqdm
-from PIL import Image
-import numpy as np
 
 from torchvision import transforms, utils
 import albumentations as A
