@@ -6,6 +6,25 @@ from torchvision.datasets import Cityscapes
 from utils import get_ignored_classes, get_used_classes, get_used_colors
 
 
+def class_to_color(mask, classes=20):
+    class_colors = get_used_colors()
+
+    rgb_image = torch.zeros(
+        (3, mask.size()[0], mask.size()[1]), dtype=torch.uint8
+    )
+    
+    # Loop through all the usuable class colors
+    for i in range(classes):
+        m = mask == i
+        color = class_colors[i]
+        
+        # Set RGB for image
+        for c in range(3):
+            rgb_image[c][m] = color[c]
+
+    return rgb_image
+
+
 class CityscapesDataset(Cityscapes):
     def __init__(
         self,
